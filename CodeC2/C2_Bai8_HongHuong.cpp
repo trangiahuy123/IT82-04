@@ -85,6 +85,20 @@ void Process_stack(int a[], int sp)
 	cout<<endl;
 }
 
+void he2( int a[], int *sp, int x)
+{
+	int i = 0;
+	while ( x> 0) {
+		i = x%2;
+		push(i);
+		x = x/2;
+	}
+	while(sp != NULL) {
+		Pop(i);
+		cout<<i;
+	}
+}
+
 int main()
 {
 	int a[MAX];
@@ -98,7 +112,8 @@ int main()
 	cout<<"5. Kiem tra STACK co day hay khong"<<endl;
 	cout<<"6. Xuat STACK"<<endl;
 	cout<<"7. Chuyen he 10 sang he 2"<<endl;
-	cout<<"8. Thoat"<<endl;
+	cout<<"8. Chuyen thu"<<end;
+	cout<<"9. Thoat"<<endl;
 	do
 	{
 		cout<<"\n Vui long chon so de thuc hien: ";
@@ -148,15 +163,22 @@ int main()
             printBin();
             cout<<endl;
             break;
-
 		case 8:
+			cout<<" nhap x: "<<endl;
+			cin>>x;
+			he2(x);
+			cout<<"he 2 la : "<<endl;
+			/*printBin()*/
+			cout<<endl;
+			break;
+		case 9:
 			cout<<"Goodbye...!"<<endl;
 			break;
 		default:
 			break;
 		}
 	}
-	while (choice !=8);
+	while (choice !=9);
 	system("pause");
 	return 0;
 }
