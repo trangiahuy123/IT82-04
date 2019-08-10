@@ -36,16 +36,16 @@ void haNoi_Tower(int n, char a, char b, char c) { // Hàm chuyển dĩa
 		}
 		else {
 			t.assign(temp.num - 1, temp.midl, temp.sour, temp.dest); // gán những giá trị này lần lượt cho n , a ,b ,c
+			/*t.assign(temp.num - 1, temp.sour, temp.midl, temp.dest);*/
 			sTower.push(t); // đẩy biến t vừa gán vào stack
 			t.assign(1, temp.sour, temp.midl, temp.dest);
 			sTower.push(t);
+			/*t.assign(temp.num - 1, temp.sour, temp.dest, temp.midl);*/
 			t.assign(temp.num - 1, temp.sour, temp.dest, temp.midl);
 			sTower.push(t);
 		}
 	}
 }
-
-
 
 int main()
 {
