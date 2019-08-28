@@ -1,232 +1,400 @@
-//Bai 14 Da Thuc Su dung lien ket don
-#include <iostream>
-#include <conio.h>
-#include <math.h>
+#include<iostream>
 using namespace std;
 struct DonThuc
 {
-float heso;
-int somu;
+    float heso,somu;
+    struct DonThuc *next,*pre;
 };
-struct node
+DonThuc *taodonthuc(float heso,float somu)
 {
-DonThuc info;
-node *next;
-};
+    DonThuc *p=new DonThuc;
+    if(p==NULL) 
+		exit(1);
+    p->heso=heso;
+    p->somu=somu;
+    p->next=p->pre=NULL;
+    return p;
+}
 struct DaThuc
 {
-node *head;
-node *tail;
+	DonThuc *head, *tail;
 };
-node* getnode(DonThuc x)
+void Init(DaThuc &L)
 {
-node *p;
-p=new node;
-if(p==NULL)
-{
-cout<<"\n khong du bo nho";
-return NULL;
+    L.head=L.tail=NULL;
 }
-p->info=x;
-p->next=NULL;
-return p;
-}
-void khoitao(DaThuc &L)
+void ThemCuoi(DaThuc &L,DonThuc *p)
 {
-L.head=NULL;
-L.tail=NULL;
-
+    if(L.head==NULL)
+		L.head=L.tail=p;
+    else
+    {
+        L.tail->next= p;
+        p->pre = L.tail;
+        L.tail=p;
+    }
 }
-void addhead(DaThuc &L,node *p)
+void Nhap(DaThuc &L)
 {
-if(L.tail==NULL)
-{
-L.head=p;
-L.tail=p;
+    DonThuc *p;
+    float heso,somu;
+    cout<<"Nhap so da thuc, ket thuc khi nhap he so = 0\n";
+    do{
+        cout<<"He so = ";cin>>heso;
+        if(heso!=0)
+        {
+            cout<<"So mu = ";cin>>somu;
+            p=taodonthuc(heso,somu);
+            ThemCuoi(L,p);
+        }
+        cout<<endl;
+    }while(heso!=0);
 }
-else
+void Xuat(DaThuc L)
 {
-p->next=L.head;
-L.head=p;
+    DonThuc *p=L.head;
+    if(p==NULL)
+    {
+        cout<<0;
+        return;
+    }
+    while(p!=NULL)
+    {
+        if(p==L.head)
+        {
+            if(p->somu==0) 
+				cout<<p->heso;
+            else
+				if(abs(p->heso)!=1 && p->somu!=1) 
+					cout<<p->heso<<"X^"<<p->somu;
+				else 
+					if(abs(p->heso)!=1 && p->somu==1) 
+						cout<<p->heso<<"X";
+					else 
+						if(abs(p->heso)==1 && p->somu!=1) 
+							if(p->heso==1)
+								cout<<"X^"<<p->somu;
+							else
+								cout<<"- X^"<<p->somu;
+						else 
+							if(p->heso==1)
+								cout<<"X";
+							else
+								cout<<"- X";
+        }
+        else
+        {
+            if(p->somu==0) 
+				if(p->heso > 0)
+					cout<<" + "<<p->heso;
+				else
+					cout<<" "<<p->heso;
+            else
+				if(abs(p->heso)!=1 && p->somu!=1) 
+					if(p->heso > 0)
+						cout<<" + "<<p->heso<<"X^ "<<p->somu;
+					else
+						cout<<" "<<p->heso<<"X^ "<<p->somu;
+				else 
+					if(abs(p->heso)!=1 && p->somu==1) 
+						if(p->heso > 0)
+							cout<<" + "<<p->heso<<"X";
+						else
+							cout<<" "<<p->heso<<"X";
+					else 
+						if(abs(p->heso)==1 && p->somu!=1) 
+							cout<<" + X^ "<<p->somu;
+						else 
+							if(p->heso==1)
+								cout<<" + X";
+							else
+								cout<<" - X";
+        }
+        p=p->next;
+    }
 }
-
-}
-void themdau(DaThuc &L,DonThuc x)
+void SapXep(DaThuc &L)
 {
-node *p;
-p=getnode(x);
-addhead(L,p);
+    DonThuc *p1=L.head,*p2;
+    while(p1!=NULL)
+    {
+        p2=p1->next;
+        while(p2!=NULL)
+        {
+            if(p2->somu > p1->somu)
+				swap(p1,p2);
+            p2=p2->next;
+        }
+        p1=p1->next;
+    }
 }
-void nhap(DonThuc &x)
+void XoaTruocQ(DaThuc &L, DonThuc *Q)
 {
-cout<<"\n Nhap Vao Don Thuc";
-cout<<"\nNhap vao he so: ";
-cin>>x.heso;
-cout<<"\nNhap so mu: ";
-cin>>x.somu;
+    DonThuc *p;
+    if(Q==NULL)
+    {
+        p=L.tail;
+        if(L.head==L.tail)
+        {
+            L.head=L.tail=NULL;
+            delete p;
+        }
+        else if(p!=NULL)
+        {
+            L.tail=L.tail->pre;
+            L.tail->next=NULL;
+            delete p;
+        }
+    }
+    else
+    {
+        p=Q->pre;
+        if(p!=NULL)
+        {
+            if(p==L.head)
+            {
+                L.head=L.head->next;
+                L.head->pre=NULL;
+                delete p;
+            }
+            else
+            {
+                p->pre->next=Q;
+                Q->pre=p->pre;
+                delete p;
+            }
+        }
+    }
 }
-void nhapDaThuc(DaThuc &L)
+void RutGon(DaThuc &L)
 {
-int n;
-DonThuc x;
-node *p;
-p=L.head;
-cout<<"Nhap Da Thuc\n";
-cout<<"nhap vao so luong don thuc: ";
-cin>>n;
-for(int i=0;i<n;i++)
-{
-cout<<"\n Don Thuc "<<i+1 <<" = ";
-nhap(x);
-
-themdau(L,x);
+    DonThuc *p1=L.head,*p2;
+    while(p1!=NULL)
+    {
+        p2=p1->next;
+        while(p2!=NULL)
+        {
+            if(p2->somu==p1->somu)
+            {
+                p1->heso+=p2->heso;
+                p2=p2->next;
+                XoaTruocQ(L,p2);
+            }
+            else p2=p2->next;
+        }
+        p1=p1->next;
+    }
 }
-}
-void congdathuc(DaThuc L,DaThuc L1,DaThuc &T)
+void ThemTruocQ(DaThuc &L, DonThuc *Q, DonThuc *p)
 {
-node *p,*q;
-int flag;
-p=L.head;
-while(p!=NULL)
-{
-themdau(T,p->info);
-p=p->next;
+    if(Q==L.head)
+    {
+        L.head->pre=p;
+        p->next=L.head;
+        L.head=p;
+    }
+    else
+    {
+        p->pre=Q->pre;
+        p->next=Q;
+        Q->pre->next=p;
+        Q->pre=p;
+    }
 }
-p=L1.head;
-q=T.head;
-while (q!=NULL)
+void Insert(DaThuc &L,DonThuc *p)
 {
-p=L1.head;
-while (p!=NULL)
+    DonThuc *p1=L.head;
+    while(p1!=NULL && p1->somu > p->somu) p1=p1->next;
+    if(p1!=NULL)
+        if(p1->somu == p->somu)
+			p1->heso += p->heso;
+        else 
+			ThemTruocQ(L,p1,p);
+    else 
+		ThemCuoi(L,p);
+}
+void XuLy(DaThuc &L)
 {
-if(p->info.somu==q->info.somu)
-q->info.heso+=p->info.heso; 
-p=p->next;
+    DonThuc *p=L.head;
+    while(p!=NULL)
+    {
+        if(p->heso==0)
+        {
+            p=p->next;
+            XoaTruocQ(L,p);
+        }
+        else p=p->next;
+    }
 }
-q=q->next;
-}
-
-p=L1.head;
-while (p!=NULL) 
+int Cong(DaThuc L1, DaThuc L2, DaThuc &L)
 {
-flag=0;
-q=T.head;
-while (q!=NULL)
+    DonThuc *p=L1.head,*a;
+    while(p!=NULL)
+    {
+        a=taodonthuc(p->heso,p->somu);
+        ThemCuoi(L,a);
+        p=p->next;
+    }
+    p=L2.head;
+    while(p!=NULL)
+    {
+        a=taodonthuc(p->heso,p->somu);
+        Insert(L,a);
+        XuLy(L);
+        p=p->next;
+    }
+    XuLy(L);
+    if(L.head==NULL)
+		return 0;
+    return 1;
+}
+int Tru(DaThuc L1, DaThuc L2, DaThuc &L)
 {
-if(q->info.somu==p->info.somu)
-flag=1;
-q=q->next;
+    DonThuc *p=L2.head;
+    while(p!=NULL)
+    {
+        p->heso=-p->heso;
+        p=p->next;
+    }
+    Cong(L1,L2,L);
+    p=L2.head;
+    while(p!=NULL)
+    {
+        p->heso=-p->heso;
+        p=p->next;
+    }
+    if(L.head==NULL) 
+		return 0;
+    return 1;
 }
-if(flag==0)
-themdau(T,p->info);
-p=p->next; 
-}
-
-}
-void trudathuc(DaThuc &L,DaThuc &L1,DaThuc &H)
+int Nhan(DaThuc L1, DaThuc L2, DaThuc &L)
 {
-node *p,*q;
-int flag;
-p=L.head;
-while(p!=NULL)
-{
-themdau(H,p->info);
-p=p->next;
+    DonThuc *p,*p1,*p2;
+    p2=L2.head;
+    while(p2!=NULL)
+    {
+        p1=L1.head;
+        while(p1!=NULL)
+        {
+            p=taodonthuc(p2->heso*p1->heso,p2->somu+p1->somu);
+            Insert(L,p);
+            p1=p1->next;
+        }
+        p2=p2->next;
+    }
+    XuLy(L);
+    if(L.head==NULL)
+		return 0;
+    return 1;
 }
-p=L1.head;
-q=H.head;
-while (q!=NULL)
+void XoaCuoi(DaThuc &L)
 {
-p=L1.head;
-while (p!=NULL)
+    DonThuc *p=L.tail;
+    if(p==NULL)
+		exit(1);
+    if(L.head==L.tail)
+    {
+        L.head=L.tail=NULL;
+        delete p;
+    }
+    else
+    {
+        L.tail=p->pre;
+        L.tail->next=NULL;
+        delete p;
+    }
+}
+void Xoa(DaThuc &L)
 {
-if(p->info.somu==q->info.somu)
-q->info.heso-=p->info.heso; 
-p=p->next;
+    while(L.head!=NULL)
+		XoaCuoi(L);
 }
-q=q->next;
-}
-
-p=L1.head;
-while (p!=NULL) 
+void Chia(DaThuc L1,DaThuc L2)
 {
-flag=0;
-q=H.head;
-while (q!=NULL)
+    DonThuc *p, *p1;
+    DaThuc a , b, du;
+    Init(a); Init(b); Init(du);
+	p1=L1.head;
+    while(p1!=NULL)
+    {
+        p=taodonthuc(p1->heso,p1->somu);
+        ThemCuoi(du,p);
+        p1=p1->next;
+    }
+    while(du.head!=NULL && du.head->somu >= L2.head->somu)
+    {
+        p=taodonthuc(du.head->heso / L2.head->heso, du.head->somu - L2.head->somu);
+        ThemCuoi(a,p);
+        Xoa(b);
+        if(Nhan(L2,a,b)==0)
+			break;
+        Xoa(du);
+        if(Tru(L1,b,du)==0)
+			break;
+    }
+    Xuat(a);
+    if(du.head!=NULL)
+    {
+        cout<<"\n du ";
+        Xuat(du);
+    }
+}
+void main()
 {
-if(q->info.somu==p->info.somu)
-flag=1;
-q=q->next;
-}
-if(flag==0)
-{
-p->info.heso*=-1;
-themdau(H,p->info);
-p->info.heso*=-1;
-}
-p=p->next; 
-}
-
-}
-void nhandathuc(DaThuc &L,DaThuc &L1,DaThuc &Ti)
-{
-node *p,*q;
-int flag;
-p=L.head;
-while(p!=NULL)
-{
-themdau(Ti,p->info);
-p=p->next;
-}
-p=L1.head;
-q=Ti.head;
-while (q!=NULL)
-{
-p=L1.head;
-while (p!=NULL)
-{
-q->info.heso*=p->info.heso; 
-q->info.somu+=p->info.somu; 
-p=p->next;
-}
-q=q->next; 
-}
-}
-void xuatDaThuc(DaThuc L)
-{
-cout<<"\n";
-node *p;
-p=L.head;
-while(p!=NULL)
-{
-cout<<(p->info).heso<<"x^"<<(p->info).somu;
-if(p->next!=NULL)
-cout<<"+";
-p=p->next;
-}
-}
-main()
-{
-DaThuc L,L1,T,H,Ti;
-khoitao(L);
-khoitao(L1);
-khoitao(T);
-khoitao(H);
-khoitao(Ti);
-DonThuc x;
-nhapDaThuc(L);
-cout<<"\n Da thuc can cong ";
-nhapDaThuc(L1);
-cout<<"\n Hai da thuc ";
-xuatDaThuc(L);cout<<"\n";
-xuatDaThuc(L1);
-congdathuc(L,L1,T);
-xuatDaThuc(T);
-cout<<"\nDa thuc 1 tru da thuc 2";
-trudathuc(L,L1,H);
-xuatDaThuc(H);
-cout<<"\n Da thuc tich \n";
-nhandathuc(L,L1,Ti);
-xuatDaThuc(Ti);
-getch();
+    DaThuc L1, L2, L;
+    Init(L1); Init(L2); Init(L);
+	cout<<"\nNhap P(x):\n";
+    Nhap(L1); 
+	cout<<"\nNhap G(x):\n";
+	Nhap(L2);
+    RutGon(L1); SapXep(L1);
+    cout<<"\nP(x) = "; Xuat(L1); cout<<endl;
+    RutGon(L2); SapXep(L2);
+    cout<<"\nQ(x) = "; Xuat(L2); cout<<endl;
+    int choice;
+    system("cls");
+	cout<<" --------- DA THUC --------- \n"
+		<<"1. Cong hai da thuc\n"
+		<<"2. Tru hai da thuc\n"
+		<<"3. Nhan hai da thuc\n"
+		<<"4. Chia hai da thuc\n"
+		<<"5. Thoat\n";
+	do
+	{
+		cout<<"\nVui long chon so de thuc hien: ";
+		cin>>choice;
+		switch(choice)
+		{
+		case 1:
+			Init(L);
+			cout<<"\nP(x) + Q(x) = ";
+			Cong(L1,L2,L);
+			Xuat(L);
+			break;
+		case 2:
+			Init(L);
+			cout<<"\nP(x) - Q(x) = ";
+			Tru(L1,L2,L);
+			Xuat(L);
+			break;
+		case 3:
+			Init(L);
+			cout<<"\nP(x) * Q(x) = ";
+			Nhan(L1,L2,L);
+			Xuat(L);
+			break;
+		case 4:
+			Init(L);
+			cout<<"\nP(x) / Q(x) = ";
+			Chia(L1,L2);
+			break;
+		case 5:
+			cout<<"Goodbye.....!\n";
+			break;
+		default:
+			break;
+		}
+	}while(choice>0&&choice<6);
+    cout<<endl;
+    system("pause");
 }
